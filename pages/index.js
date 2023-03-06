@@ -1,5 +1,7 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
+import ChatBox from './chatbox';
+
 
 export default function Home() {
   return (
@@ -17,6 +19,10 @@ export default function Home() {
         <p className={styles.description}>
           It's never been easier to book a trip.
         </p>
+        <div className="App">
+          <ChatBox/>
+        </div>
+
 
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>
