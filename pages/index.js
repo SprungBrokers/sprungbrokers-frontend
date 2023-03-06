@@ -11,11 +11,11 @@ export default function Home() {
 
       <main>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          SprungBroker
         </h1>
 
         <p className={styles.description}>
-          Get started by editing <code>pages/index.js</code>
+          It's never been easier to book a trip.
         </p>
 
         <div className={styles.grid}>
@@ -49,8 +49,8 @@ export default function Home() {
         </div>
       </main>
 
-      <footer>
-        <a
+      {/* <footer>
+         <a
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
           rel="noopener noreferrer"
@@ -58,7 +58,7 @@ export default function Home() {
           Powered by{' '}
           <img src="/vercel.svg" alt="Vercel" className={styles.logo} />
         </a>
-      </footer>
+      </footer> */}
 
       <style jsx>{`
         main {
@@ -105,6 +105,7 @@ export default function Home() {
           font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
             Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
             sans-serif;
+          background-color: #7CD79B;
         }
         * {
           box-sizing: border-box;
