@@ -1,7 +1,7 @@
 // make a call to the Amadeus API to get the flight offers
 import React, { useState, useEffect } from 'react'
 
-const API_KEY = '1PLpmZeah34J8IXBmWELWVUkuzHS'
+const API_KEY = 'WiL3d2v5Gd69ZLzFLnKsOWkiPmWZ'
 
 const getDestinationCodeAPI = async (latitude, longitude) => {
   console.log('running get destination code')

@@ -19,7 +19,7 @@ class ActionProvider {
       name: name
     }))
 
-    const message = this.createChatBotMessage(`Hello ${name}`, {
+    const message = this.createChatBotMessage(`Hello ${name}!`, {
       withAvatar: false
     })
     this.addMessageToState(message)
