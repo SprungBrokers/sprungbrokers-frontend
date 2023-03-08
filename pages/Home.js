@@ -1,57 +1,23 @@
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
-import ChatBox from './chatbox';
+import Head from 'next/head'
+import styles from '../styles/Home.module.css'
+import ChatBox from './chatbox'
 
-
-export default function Home() {
+export default function Home () {
   return (
     <div className={styles.container}>
       <Head>
         <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel='icon' href='/favicon.ico' />
       </Head>
 
       <main>
-        <h1 className={styles.title}>
-          SprungBroker
-        </h1>
+        <h1 className={styles.title}>SprungBroker</h1>
 
         <p className={styles.description}>
           It's never been easier to book a trip.
         </p>
-        <div className="App">
-          <ChatBox/>
-        </div>
-
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+        <div className='App'>
+          <ChatBox />
         </div>
       </main>
 
@@ -111,7 +77,7 @@ export default function Home() {
           font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
             Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
             sans-serif;
-          background-color: #7CD79B;
+          background-color: #7cd79b;
         }
         * {
           box-sizing: border-box;

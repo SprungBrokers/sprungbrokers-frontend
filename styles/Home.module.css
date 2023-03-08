@@ -89,3 +89,11 @@
     flex-direction: column;
   }
 }
+
+.react-chatbot-kit-chat-container {
+  width: 800px !important;
+  height: 500px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+}

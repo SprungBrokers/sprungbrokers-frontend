@@ -36,3 +36,12 @@ button {
   padding: 0.5rem 1rem;
   font-weight: bold;
 }
+
+.react-chatbot-kit-chat-container {
+  width: 800px !important;
+  margin-top: 20px;
+}
+
+.react-chatbot-kit-chat-bot-message {
+  margin-left: 0 !important;
+}

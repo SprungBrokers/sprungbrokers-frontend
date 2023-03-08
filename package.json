@@ -9,6 +9,9 @@
     "next": "latest",
     "react": "18.2.0",
     "react-chatbot-kit": "^2.1.2",
-    "react-dom": "18.2.0"
+    "react-datepicker": "^4.10.0",
+    "react-dom": "18.2.0",
+    "react-google-autocomplete": "^2.7.3",
+    "react-places-autocomplete": "^7.3.0"
   }
 }
