@@ -41,6 +41,33 @@ class ActionProvider {
     this.addMessageToState(message)
   }
 
+  showHotelLocationPicker = () => {
+    const message = this.createChatBotMessage('Where would you like to stay?', {
+      widget: 'hotelautocompleteLocation',
+      withAvatar: false
+    })
+    this.addMessageToState(message)
+  }
+
+  handleHotelLocation = place => {
+    const userMessage = this.createClientMessage(place.formatted_address)
+    this.setState(prev => ({
+      ...prev,
+      hotelLocation: place.formatted_address,
+      hotelLocationLat: place.geometry.location.lat(),
+      hotelLocationLng: place.geometry.location.lng()
+    }))
+
+    this.addMessageToState(userMessage)
+    const message = this.createChatBotMessage(
+      `Great! You want to stay at ${place.formatted_address}.`,
+      {
+        withAvatar: false
+      }
+    )
+    this.addMessageToState(message)
+  }
+
   handleOriginLocation = place => {
     const userMessage = this.createClientMessage(place.formatted_address)
     this.setState(prev => ({
