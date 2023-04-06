@@ -14,7 +14,7 @@ const MyDatePicker = props => {
         <DatePicker
           startDate={startDate}
           minDate={startDate}
-          selected={startDate}
+          // selected={startDate}
           onChange={date => {
             props.actionProvider.handleStartDate(date)
           }}
