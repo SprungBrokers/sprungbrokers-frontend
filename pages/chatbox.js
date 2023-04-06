@@ -5,9 +5,11 @@ import Chatbot, { createChatBotMessage } from 'react-chatbot-kit'
 import MessageParser from './chatbot/MessageParser'
 import ActionProvider from './chatbot/ActionProvider'
 import JavascriptQuiz from './chatbot/widgets/JavascriptQuiz'
-import AutocompleteLocation from './chatbot/widgets/AutocompleteLocation'
+import OriginAutocompleteLocation from './chatbot/widgets/OriginAutocompleteLocation'
+import DestAutocompleteLocation from './chatbot/widgets/DestAutocompleteLocation'
 import MyDatePicker from './chatbot/widgets/DatePicker'
 import FlightSearch from './chatbot/widgets/FlightSearch'
+import HotelSearch from './chatbot/widgets/HotelSearch'
 import FlightItinerary from './chatbot/widgets/FlightItinerary'
 
 import 'react-chatbot-kit/build/main.css'
@@ -34,9 +36,12 @@ const config = {
   },
   state: {
     name: '',
-    locationLat: '',
-    locationLng: '',
-    location: '',
+    originLocationLat: '',
+    originLocationLng: '',
+    originLocation: '',
+    destLocationLat: '',
+    destLocationLng: '',
+    destLocation: '',
     startDate: '',
     endDate: '',
     departingFlight: '',
@@ -48,8 +53,12 @@ const config = {
       widgetFunc: props => <JavascriptQuiz {...props} />
     },
     {
-      widgetName: 'autocompleteLocation',
-      widgetFunc: props => <AutocompleteLocation {...props} />
+      widgetName: 'originautocompleteLocation',
+      widgetFunc: props => <OriginAutocompleteLocation {...props} />
+    },
+    {
+      widgetName: 'destautocompleteLocation',
+      widgetFunc: props => <DestAutocompleteLocation {...props} />
     },
     {
       widgetName: 'startDatePicker',
@@ -78,6 +87,16 @@ const config = {
         'locationLat',
         'locationLng',
         'location',
+        'startDate',
+        'endDate'
+      ]
+    },
+    {
+      widgetName: 'hotelSearch',
+      widgetFunc: props => <HotelSearch {...props}/>,
+      mapStateToProps: [
+        'locationLat',
+        'locationLng',
         'startDate',
         'endDate'
       ]

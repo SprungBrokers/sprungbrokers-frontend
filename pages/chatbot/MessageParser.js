@@ -16,7 +16,7 @@ class MessageParser {
       this.state.name = message
       this.actionProvider.greet(message)
       this.state.currMessage++
-      this.actionProvider.showLocationPicker()
+      this.actionProvider.showOriginLocationPicker()
     } else if (this.state.currMessage == 1) {
       this.state.currMessage++
     }

@@ -25,21 +25,49 @@ class ActionProvider {
     this.addMessageToState(message)
   }
 
-  showLocationPicker = () => {
-    const message = this.createChatBotMessage('Where would you like to go?', {
-      widget: 'autocompleteLocation',
+  showOriginLocationPicker = () => {
+    const message = this.createChatBotMessage('Where are you flying from?', {
+      widget: 'originautocompleteLocation',
       withAvatar: false
     })
     this.addMessageToState(message)
   }
 
-  handleLocation = place => {
+  showDestinationLocationPicker = () => {
+    const message = this.createChatBotMessage('Where would you like to go?', {
+      widget: 'destautocompleteLocation',
+      withAvatar: false
+    })
+    this.addMessageToState(message)
+  }
+
+  handleOriginLocation = place => {
     const userMessage = this.createClientMessage(place.formatted_address)
     this.setState(prev => ({
       ...prev,
-      location: place.formatted_address,
-      locationLat: place.geometry.location.lat(),
-      locationLng: place.geometry.location.lng()
+      originLocation: place.formatted_address,
+      originLocationLat: place.geometry.location.lat(),
+      originLocationLng: place.geometry.location.lng()
+    }))
+
+    this.addMessageToState(userMessage)
+    const message = this.createChatBotMessage(
+      `Great! You want to fly from ${place.formatted_address}.`,
+      {
+        withAvatar: false
+      }
+    )
+    this.addMessageToState(message)
+    this.showDestinationLocationPicker()
+  }
+
+  handleDestinationLocation = place => {
+    const userMessage = this.createClientMessage(place.formatted_address)
+    this.setState(prev => ({
+      ...prev,
+      destLocation: place.formatted_address,
+      destLocationLat: place.geometry.location.lat(),
+      destLocationLng: place.geometry.location.lng()
     }))
 
     this.addMessageToState(userMessage)
@@ -93,7 +121,7 @@ class ActionProvider {
       }
     )
     this.addMessageToState(message)
-    this.handleFlightSearch()
+    this.handleHotelSearch()
   }
 
   handleFlightSearch = () => {
@@ -152,6 +180,17 @@ class ActionProvider {
     )
     this.addMessageToState(message)
     // this.handleHotelSearch()
+  }
+
+  handleHotelSearch = () => {
+    const message = this.createChatBotMessage(
+      'Please pick a hotel from the list below.',
+      {
+        withAvatar: false,
+        widget: 'hotelSearch'
+      }
+    )
+    this.addMessageToState(message)
   }
 
   handleJavascriptQuiz = () => {
