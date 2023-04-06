@@ -10,6 +10,7 @@ import MyDatePicker from './chatbot/widgets/DatePicker'
 import FlightSearch from './chatbot/widgets/FlightSearch'
 import HotelSearch from './chatbot/widgets/HotelSearch'
 import FlightItinerary from './chatbot/widgets/FlightItinerary'
+import HotelItinerary from './chatbot/widgets/HotelItinerary'
 
 import 'react-chatbot-kit/build/main.css'
 
@@ -41,6 +42,7 @@ const config = {
     destLocationLat: '',
     destLocationLng: '',
     destLocation: '',
+    hotelLocation: '',
     hotelLocationLat: '',
     hotelLocationLng: '',
     checkInDate: '',
@@ -115,6 +117,7 @@ const config = {
       widgetName: 'hotelSearch',
       widgetFunc: props => <HotelSearch {...props}/>,
       mapStateToProps: [
+        'hotelLocation',
         'hotelLocationLat',
         'hotelLocationLng',
         'checkInDate',
@@ -129,7 +132,7 @@ const config = {
     {
       widgetName: 'hotelItinerary',
       widgetFunc: props => <HotelItinerary {...props} />,
-      mapSEtateToProps: ['selectedHotel']
+      mapStateToProps: ['selectedHotel']
     }
   ]
 }

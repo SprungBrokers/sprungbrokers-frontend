@@ -11,14 +11,14 @@ const getHotelsListAPI = async (latitude, longitude) => {
   console.log('running get destination code')
   console.log(process.env.AMADEUS_API_KEY)
   try {
-    const response = await fetch(
-      `https://test.api.amadeus.com/v1/reference-data/hotels/by-geocode?latitude=${latitude}&longitude=${longitude}`,
-      {
-        headers: {
-          Authorization: `Bearer ${API_KEY}`
-        }
-      }
-    )
+    // const response = await fetch(
+    //   `https://test.api.amadeus.com/v1/reference-data/hotels/by-geocode?latitude=${latitude}&longitude=${longitude}`,
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${API_KEY}`
+    //     }
+    //   }
+    // )
     //const data = await response.json()
     const data = hotelList
     console.log('DATA:', data)
@@ -36,15 +36,15 @@ const getHotelOffersAPI = async (
 ) => {
   console.log(type)
   try {
-    let response
-    response = await fetch(
-    `https://test.api.amadeus.com/v2/shopping/hotel-offers?hotelIds=${hotelids}&checkInDate=${checkindate}&checkOutDate=${checkoutdate}`,
-    {
-        headers: {
-        Authorization: `Bearer ${API_KEY}`
-        }
-    }
-    )
+    // let response
+    // response = await fetch(
+    // `https://test.api.amadeus.com/v2/shopping/hotel-offers?hotelIds=${hotelids}&checkInDate=${checkindate}&checkOutDate=${checkoutdate}`,
+    // {
+    //     headers: {
+    //     Authorization: `Bearer ${API_KEY}`
+    //     }
+    // }
+    // )
     //const data = await response.json()
     const data = hotelOffers
     console.log('DATA:', data)
@@ -59,13 +59,13 @@ const HotelSearch = props => {
   const [cityCode, setCityCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const { destLocationLat, destLocationLng, startDate, endDate } = props
+  const { hotelLocation, hotelLocationLat, hotelLocationLng, checkInDate, checkOutDate } = props
 
   useEffect(() => {
     setLoading(true)
     const asyncFunc = async () => {
-      const checkindate = startDate.toISOString().slice(0, 10)
-      const checkoutdate = endDate.toISOString().slice(0, 10)
+      const checkindate = checkInDate.toISOString().slice(0, 10)
+      const checkoutdate = checkOutDate.toISOString().slice(0, 10)
       const getHotelOffers = async hotelids => {
         setLoading(true)
         try {
@@ -81,7 +81,7 @@ const HotelSearch = props => {
         }
         setLoading(false)
       }
-      const hotels = await getHotelsListAPI(destLocationLat, destLocationLng)
+      const hotels = await getHotelsListAPI(hotelLocationLat, hotelLocationLng)
       console.log(hotels)
       await getHotelOffers(hotels)
     }
@@ -103,7 +103,7 @@ const HotelSearch = props => {
 
   return (
     <div>
-      <strong>Hotels from {startDate} to {endDate}:</strong>
+      <strong>Hotels from {checkInDate.toJSON().slice(0, 10)} to {checkOutDate.toJSON().slice(0, 10)}:</strong>
       <br />
       <i>All times are in the city's local timezone</i>
       {hotelOffers.map(hotelOffer => (

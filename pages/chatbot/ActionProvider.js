@@ -25,6 +25,16 @@ class ActionProvider {
     this.addMessageToState(message)
   }
 
+  flightsOrHotels = () => {
+    const message = this.createChatBotMessage(
+      "Would you like to book flights or hotels?",
+      {
+        withAvatar: false
+      }
+    )
+    this.addMessageToState(message)
+  }
+  
   showOriginLocationPicker = () => {
     const message = this.createChatBotMessage('Where are you flying from?', {
       widget: 'originautocompleteLocation',
@@ -66,6 +76,7 @@ class ActionProvider {
       }
     )
     this.addMessageToState(message)
+    this.handleCheckInDatePicker()
   }
 
   handleOriginLocation = place => {
@@ -148,7 +159,16 @@ class ActionProvider {
       }
     )
     this.addMessageToState(message)
-    this.handleHotelSearch()
+    //this.handleFlightSearch()
+    this.handleCheckInDatePicker()
+  }
+
+  handleCheckInDatePicker = () => {
+    const message = this.createChatBotMessage('What day would you like to CheckIn?', {
+      widget: 'checkInDatePicker',
+      withAvatar: false
+    })
+    this.addMessageToState(message)
   }
 
   handleHotelCheckInDate = date => {
@@ -183,7 +203,7 @@ class ActionProvider {
       }
     )
     this.addMessageToState(message)
-
+    this.handleHotelSearch()
   }
 
   handleFlightSearch = () => {
@@ -254,9 +274,6 @@ class ActionProvider {
     this.addMessageToState(message)
   }
 
-  // TODO: This function
-  // At this point, the user has seen a list of hotels and selected this specific hotel
-  // I think all we need to do is print hotel itinerary? (SY)
   selectHotel = hotelOffer => {
     const userMessage = this.createClientMessage('Select hotel ' + hotelOffer.hotel.name)
     this.setState(prev => ({
@@ -265,13 +282,15 @@ class ActionProvider {
     }))
     this.addMessageToState(userMessage)
     console.log(hotelOffer)
+    
     const message = this.createChatBotMessage(
       'Great! You picked a hotel! Here is your hotel itinerary',
       {
-        widget: 'hotelItinerary', // TODO: MAKE hotelItinerary widget
+        widget: 'hotelItinerary',
         withAvatar: false
       }
     )
+    this.addMessageToState(message)
   }
 
   handleJavascriptQuiz = () => {
