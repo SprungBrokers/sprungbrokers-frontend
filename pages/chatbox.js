@@ -65,6 +65,10 @@ const config = {
       widgetFunc: props => <AutocompleteLocation {...props} type='dest'/>
     },
     {
+      widgetName: 'hotelautocompleteLocation',
+      widgetFunc: props => <AutocompleteLocation {...props} type='hotel'/>
+    },
+    {
       widgetName: 'startDatePicker',
       widgetFunc: props => <MyDatePicker {...props} type='start' />
     },

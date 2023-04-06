@@ -5,8 +5,10 @@ const AutocompleteLocation = props => {
   const onPlaceSelectedFun = place => {
     if (props.type === 'origin') {
       return props.actionProvider.handleOriginLocation(place)
-    } else {
+    } else if(props.type === 'dest') {
       return props.actionProvider.handleDestinationLocation(place)
+    } else {
+      return props.actionProvider.handleHotelLocation(place)
     }
   }
 
