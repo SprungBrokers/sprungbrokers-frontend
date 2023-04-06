@@ -124,6 +124,41 @@ class ActionProvider {
     this.handleHotelSearch()
   }
 
+  handleHotelCheckInDate = date => {
+    const userMessage = this.createClientMessage(date.toLocaleDateString())
+    this.setState(prev => ({
+      ...prev,
+      checkInDate: date
+    }))
+    this.addMessageToState(userMessage)
+    const message = this.createChatBotMessage(
+      `Great! You want to check-in on ${date.toLocaleDateString()}. When would you like to check-out?`,
+      {
+        withAvatar: false,
+        widget: 'checkOutDatePicker'
+      }
+    )
+    this.addMessageToState(message)
+  }
+
+  handleHotelCheckOutDate = date => {
+    const userMessage = this.createClientMessage(date.toLocaleDateString())
+    this.setState(prev => ({
+      ...prev,
+      checkOutDate: date
+    }))
+
+    this.addMessageToState(userMessage)
+    const message = this.createChatBotMessage(
+      `Great! You want to check-out on ${date.toLocaleDateString()}. Let me look for some hotels for you.`,
+      {
+        withAvatar: false
+      }
+    )
+    this.addMessageToState(message)
+
+  }
+
   handleFlightSearch = () => {
     const message = this.createChatBotMessage(
       'Please pick a departing flight from the list below.',
@@ -179,7 +214,6 @@ class ActionProvider {
       }
     )
     this.addMessageToState(message)
-    // this.handleHotelSearch()
   }
 
   handleHotelSearch = () => {
@@ -191,6 +225,26 @@ class ActionProvider {
       }
     )
     this.addMessageToState(message)
+  }
+
+  // TODO: This function
+  // At this point, the user has seen a list of hotels and selected this specific hotel
+  // I think all we need to do is print hotel itinerary? (SY)
+  selectHotel = hotelOffer => {
+    const userMessage = this.createClientMessage('Select hotel ' + hotelOffer.hotel.name)
+    this.setState(prev => ({
+      ...prev,
+      selectedHotel: hotelOffer
+    }))
+    this.addMessageToState(userMessage)
+    console.log(hotelOffer)
+    const message = this.createChatBotMessage(
+      'Great! You picked a hotel! Here is your hotel itinerary',
+      {
+        widget: 'hotelItinerary', // TODO: MAKE hotelItinerary widget
+        withAvatar: false
+      }
+    )
   }
 
   handleJavascriptQuiz = () => {

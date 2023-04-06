@@ -1,7 +1,15 @@
 import Autocomplete from 'react-google-autocomplete'
 import { createClientMessage } from 'react-chatbot-kit'
 
-const OriginAutocompleteLocation = props => {
+const AutocompleteLocation = props => {
+  const onPlaceSelectedFun = place => {
+    if (props.type === 'origin') {
+      return props.actionProvider.handleOriginLocation(place)
+    } else {
+      return props.actionProvider.handleDestinationLocation(place)
+    }
+  }
+
   return (
     <div>
       <Autocomplete
@@ -14,13 +22,11 @@ const OriginAutocompleteLocation = props => {
           marginBottom: '10px',
           borderRadius: '5px'
         }}
-        onPlaceSelected={place => {
-          props.actionProvider.handleOriginLocation(place)
-        }}
+        onPlaceSelected={onPlaceSelectedFun}
         types={['(cities)']}
       />
     </div>
   )
 }
 
-export default OriginAutocompleteLocation
+export default AutocompleteLocation

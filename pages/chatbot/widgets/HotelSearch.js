@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react'
 
 // API return jsons from Amadeus Documentation
-import hotelList from './HotelList.json'
-import hotelSearch from './HotelSearch.json'
+import hotelList from './HotelList'
+import hotelOffers from './HotelOffers'
 
 const API_KEY = 'ffmdpEq1rGKspqNkgq3jXhYXpbqp'
 
@@ -46,7 +46,7 @@ const getHotelOffersAPI = async (
     }
     )
     //const data = await response.json()
-    const data = hotelSearch
+    const data = hotelOffers
     console.log('DATA:', data)
     return data
   } catch (error) {
@@ -54,22 +54,12 @@ const getHotelOffersAPI = async (
   }
 }
 
-const formatDateTime = date => {
-  // takes a string in the format of YYYY-MM-DDTHH:MM:SS and returns a string in the format of HH:MM AM/PM
-  const time = date.slice(11, 16)
-  const hour = time.slice(0, 2)
-  const minutes = time.slice(3, 5)
-  const ampm = hour >= 12 ? 'PM' : 'AM'
-  const formattedHour = hour % 12 || 12
-  return `${formattedHour}:${minutes} ${ampm}`
-}
-
 const HotelSearch = props => {
   const [hotelOffers, setHotelOffers] = useState([])
   const [cityCode, setCityCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const { locationLat, locationLng, startDate, endDate } = props
+  const { destLocationLat, destLocationLng, startDate, endDate } = props
 
   useEffect(() => {
     setLoading(true)
@@ -85,18 +75,18 @@ const HotelSearch = props => {
             checkoutdate,
             props.type
           )
-          sethotelOffers(data.data)
+          setHotelOffers(data.data)
         } catch (error) {
           setError(error.message)
         }
         setLoading(false)
       }
-      const hotels = await getHotelsListAPI(locationLat, locationLng)
-      console.log(code.data[0].name)
+      const hotels = await getHotelsListAPI(destLocationLat, destLocationLng)
+      console.log(hotels)
       await getHotelOffers(hotels)
     }
     asyncFunc()
-  }, [props.startDate, props.endDate])
+  }, [props.checkInDate, props.checkOutDate])
 
   if (loading) {
     return <div>Loading...</div>
@@ -108,13 +98,12 @@ const HotelSearch = props => {
 
   const selectHotel = hotelOffer => {
     console.log('Hotel Selection:', hotelOffer)
-    //add function in action provider to select Hotel
-    props.actionProvider.selectDepartingFlight(hotelOffer)
+    props.actionProvider.selectHotel(hotelOffer)
   }
 
   return (
     <div>
-      <strong>Hotels from {startDate.toJSON().slice(0, 10)} to {endDate.toJSON().slice(0, 10)}:</strong>
+      <strong>Hotels from {startDate} to {endDate}:</strong>
       <br />
       <i>All times are in the city's local timezone</i>
       {hotelOffers.map(hotelOffer => (
@@ -137,11 +126,10 @@ const HotelSearch = props => {
           </div>
           <div className='flightPath'>
             <div>
-              {hotelOffer.offers[0].rateCode}
+              {hotelOffer.offers[0].rateCode} Star Hotel
             </div>
             <div>
-              {hotelOffer.offers[0].room.typeEstimate.beds}
-              {hotelOffer.offers[0].room.typeEstimate.bedType}
+            ${Math.round(hotelOffer.offers[0].price.total * 1.05 * 100) / 100} at ${Math.round(hotelOffer.offers[0].price.base * 1.05 * 100) / 100} per night
             </div>
           </div>
           <br />
@@ -164,7 +152,7 @@ const HotelSearch = props => {
           <br /> */}
           <div>
             <strong>
-              ${Math.round(hotelOffer.offers[0].price.total * 1.05 * 100) / 100} at ${Math.round(hotelOffer.offers[0].price.base * 1.05 * 100) / 100} per night
+              Room Type: {hotelOffer.offers[0].room.typeEstimated.beds}&nbsp;{hotelOffer.offers[0].room.typeEstimated.bedType}&nbsp;
             </strong>{' '}
           </div>
         </div>
