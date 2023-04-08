@@ -128,11 +128,13 @@ class ActionProvider {
   }
 
   handleStartDate = date => {
+    console.log("hello")
     const userMessage = this.createClientMessage(date.toLocaleDateString())
     this.setState(prev => ({
       ...prev,
       startDate: date
     }))
+    console.log(this.state)
     this.addMessageToState(userMessage)
     const message = this.createChatBotMessage(
       `Great! You want to leave on ${date.toLocaleDateString()}. When would you like to return?`,

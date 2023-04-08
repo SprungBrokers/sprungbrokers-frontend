@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react'
+
 class MessageParser {
   constructor (actionProvider) {
     this.actionProvider = actionProvider
@@ -11,10 +13,32 @@ class MessageParser {
     const details = response.details
     //TODO: Map all values in details to state
     if (details.start_date) {
-      this.state.startDate = details.start_date
+      this.setState(prev => ({
+        ...prev,
+        startDate: details.start_date
+      }))
     }    
     if (details.end_date) {
-      this.state.endDate = details.end_date
+      this.setState(prev => ({
+        ...prev,
+        endDate: details.end_date
+      }))
+    }
+  }
+
+  getFlightInfo = () => {
+    if (!this.state.startDate) {
+      this.actionProvider.handleStartDatePicker()
+    } else if (!this.state.endDate) {
+      this.actionProvider.handleStartDate()
+    } else if (!this.state.originLocation) {
+      this.actionProvider.showOriginLocationPicker()
+    } else if (!this.state.destLocation) {
+      this.actionProvider.showDestinationLocationPicker()
+    } else if (!this.state.departingFlight) {
+      this.actionProvider.handleFlightSearch()
+    } else if (!this.state.returningFlight) {
+      this.actionProvider.handleReturnFightSearch()
     }
   }
 
@@ -50,30 +74,11 @@ class MessageParser {
 
     this.responseToState(response)
 
-    if (!this.state.startDate) {
-      this.actionProvider.handleStartDatePicker()
-    }
-
-
     // TODO(backend): Need to know if hotel or flight
     // Code below assumes flight
-    // Verify all values in details are non null
+    // if (type == flight) {this.getFlightInfo()}
 
-
-
-    // if (this.state.currMessage === 0) {
-    //   console.log ('first')
-    //   this.state.name = message
-    //   this.actionProvider.greet(message)
-    //   this.state.currMessage++
-    //   this.actionProvider.showHotelLocationPicker()
-    // } else if (this.state.currMessage == 1) {
-    //   this.state.currMessage++
-    // }
-
-    // if (lowercase.includes('javascript') || lowercase.includes('js')) {
-    //   this.actionProvider.handleJavascriptQuiz()
-    // }
+    this.getFlightInfo()
   }
 }
 

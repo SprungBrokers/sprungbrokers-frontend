@@ -45,14 +45,14 @@ const config = {
     destLocation: '',
     startDate: '',
     endDate: '',
+    departingFlight: '',
+    returningFlight: '',
     // Hotel
     hotelLocation: '',
     hotelLocationLat: '',
     hotelLocationLng: '',
     checkInDate: '',
     checkOutDate: '',
-    departingFlight: '',
-    returningFlight: '',
     selectedHotel: '',
   },
   widgets: [
