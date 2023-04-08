@@ -36,19 +36,21 @@ const config = {
   },
   state: {
     name: '',
+    // Flight
     originLocationLat: '',
     originLocationLng: '',
     originLocation: '',
     destLocationLat: '',
     destLocationLng: '',
     destLocation: '',
+    startDate: '',
+    endDate: '',
+    // Hotel
     hotelLocation: '',
     hotelLocationLat: '',
     hotelLocationLng: '',
     checkInDate: '',
     checkOutDate: '',
-    startDate: '',
-    endDate: '',
     departingFlight: '',
     returningFlight: '',
     selectedHotel: '',
