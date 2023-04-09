@@ -13,5 +13,8 @@
     "react-dom": "18.2.0",
     "react-google-autocomplete": "^2.7.3",
     "react-places-autocomplete": "^7.3.0"
+  },
+  "devDependencies": {
+    "json-loader": "^0.5.7"
   }
 }

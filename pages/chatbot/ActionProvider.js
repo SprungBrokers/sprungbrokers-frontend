@@ -25,21 +25,87 @@ class ActionProvider {
     this.addMessageToState(message)
   }
 
-  showLocationPicker = () => {
-    const message = this.createChatBotMessage('Where would you like to go?', {
-      widget: 'autocompleteLocation',
+  flightsOrHotels = () => {
+    const message = this.createChatBotMessage(
+      "Would you like to book flights or hotels?",
+      {
+        withAvatar: false
+      }
+    )
+    this.addMessageToState(message)
+  }
+  
+  showOriginLocationPicker = () => {
+    const message = this.createChatBotMessage('Where are you flying from?', {
+      widget: 'originautocompleteLocation',
       withAvatar: false
     })
     this.addMessageToState(message)
   }
 
-  handleLocation = place => {
+  showDestinationLocationPicker = () => {
+    const message = this.createChatBotMessage('Where would you like to go?', {
+      widget: 'destautocompleteLocation',
+      withAvatar: false
+    })
+    this.addMessageToState(message)
+  }
+
+  showHotelLocationPicker = () => {
+    const message = this.createChatBotMessage('Where would you like to stay?', {
+      widget: 'hotelautocompleteLocation',
+      withAvatar: false
+    })
+    this.addMessageToState(message)
+  }
+
+  handleHotelLocation = place => {
     const userMessage = this.createClientMessage(place.formatted_address)
     this.setState(prev => ({
       ...prev,
-      location: place.formatted_address,
-      locationLat: place.geometry.location.lat(),
-      locationLng: place.geometry.location.lng()
+      hotelLocation: place.formatted_address,
+      hotelLocationLat: place.geometry.location.lat(),
+      hotelLocationLng: place.geometry.location.lng()
+    }))
+
+    this.addMessageToState(userMessage)
+    const message = this.createChatBotMessage(
+      `Great! You want to stay at ${place.formatted_address}.`,
+      {
+        withAvatar: false
+      }
+    )
+    this.addMessageToState(message)
+    this.handleCheckInDatePicker()
+  }
+
+  handleOriginLocation = place => {
+    const userMessage = this.createClientMessage(place.formatted_address)
+    this.setState(prev => ({
+      ...prev,
+      originLocation: place.formatted_address,
+      originLocationLat: place.geometry.location.lat(),
+      originLocationLng: place.geometry.location.lng()
+    }))
+
+    this.addMessageToState(userMessage)
+    const message = this.createChatBotMessage(
+      `Great! You want to fly from ${place.formatted_address}.`,
+      {
+        withAvatar: false
+      }
+    )
+    this.addMessageToState(message)
+    this.showDestinationLocationPicker()
+  }
+
+  handleDestinationLocation = place => {
+    const userMessage = this.createClientMessage(place.formatted_address)
+    this.setState(prev => ({
+      ...prev,
+      destLocation: place.formatted_address,
+      destLocationLat: place.geometry.location.lat(),
+      destLocationLng: place.geometry.location.lng()
     }))
 
     this.addMessageToState(userMessage)
@@ -62,11 +128,13 @@ class ActionProvider {
   }
 
   handleStartDate = date => {
+    console.log("hello")
     const userMessage = this.createClientMessage(date.toLocaleDateString())
     this.setState(prev => ({
       ...prev,
       startDate: date
     }))
+    console.log(this.state)
     this.addMessageToState(userMessage)
     const message = this.createChatBotMessage(
       `Great! You want to leave on ${date.toLocaleDateString()}. When would you like to return?`,
@@ -93,7 +161,51 @@ class ActionProvider {
       }
     )
     this.addMessageToState(message)
-    this.handleFlightSearch()
+    //this.handleFlightSearch()
+    this.handleCheckInDatePicker()
+  }
+
+  handleCheckInDatePicker = () => {
+    const message = this.createChatBotMessage('What day would you like to CheckIn?', {
+      widget: 'checkInDatePicker',
+      withAvatar: false
+    })
+    this.addMessageToState(message)
+  }
+
+  handleHotelCheckInDate = date => {
+    const userMessage = this.createClientMessage(date.toLocaleDateString())
+    this.setState(prev => ({
+      ...prev,
+      checkInDate: date
+    }))
+    this.addMessageToState(userMessage)
+    const message = this.createChatBotMessage(
+      `Great! You want to check-in on ${date.toLocaleDateString()}. When would you like to check-out?`,
+      {
+        withAvatar: false,
+        widget: 'checkOutDatePicker'
+      }
+    )
+    this.addMessageToState(message)
+  }
+
+  handleHotelCheckOutDate = date => {
+    const userMessage = this.createClientMessage(date.toLocaleDateString())
+    this.setState(prev => ({
+      ...prev,
+      checkOutDate: date
+    }))
+
+    this.addMessageToState(userMessage)
+    const message = this.createChatBotMessage(
+      `Great! You want to check-out on ${date.toLocaleDateString()}. Let me look for some hotels for you.`,
+      {
+        withAvatar: false
+      }
+    )
+    this.addMessageToState(message)
+    this.handleHotelSearch()
   }
 
   handleFlightSearch = () => {
@@ -151,7 +263,36 @@ class ActionProvider {
       }
     )
     this.addMessageToState(message)
-    // this.handleHotelSearch()
+  }
+
+  handleHotelSearch = () => {
+    const message = this.createChatBotMessage(
+      'Please pick a hotel from the list below.',
+      {
+        withAvatar: false,
+        widget: 'hotelSearch'
+      }
+    )
+    this.addMessageToState(message)
+  }
+
+  selectHotel = hotelOffer => {
+    const userMessage = this.createClientMessage('Select hotel ' + hotelOffer.hotel.name)
+    this.setState(prev => ({
+      ...prev,
+      selectedHotel: hotelOffer
+    }))
+    this.addMessageToState(userMessage)
+    console.log(hotelOffer)
+    
+    const message = this.createChatBotMessage(
+      'Great! You picked a hotel! Here is your hotel itinerary',
+      {
+        widget: 'hotelItinerary',
+        withAvatar: false
+      }
+    )
+    this.addMessageToState(message)
   }
 
   handleJavascriptQuiz = () => {

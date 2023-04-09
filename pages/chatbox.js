@@ -8,7 +8,9 @@ import JavascriptQuiz from './chatbot/widgets/JavascriptQuiz'
 import AutocompleteLocation from './chatbot/widgets/AutocompleteLocation'
 import MyDatePicker from './chatbot/widgets/DatePicker'
 import FlightSearch from './chatbot/widgets/FlightSearch'
+import HotelSearch from './chatbot/widgets/HotelSearch'
 import FlightItinerary from './chatbot/widgets/FlightItinerary'
+import HotelItinerary from './chatbot/widgets/HotelItinerary'
 
 import 'react-chatbot-kit/build/main.css'
 
@@ -34,13 +36,24 @@ const config = {
   },
   state: {
     name: '',
-    locationLat: '',
-    locationLng: '',
-    location: '',
+    // Flight
+    originLocationLat: '',
+    originLocationLng: '',
+    originLocation: '',
+    destLocationLat: '',
+    destLocationLng: '',
+    destLocation: '',
     startDate: '',
     endDate: '',
     departingFlight: '',
-    returningFlight: ''
+    returningFlight: '',
+    // Hotel
+    hotelLocation: '',
+    hotelLocationLat: '',
+    hotelLocationLng: '',
+    checkInDate: '',
+    checkOutDate: '',
+    selectedHotel: '',
   },
   widgets: [
     {
@@ -48,8 +61,16 @@ const config = {
       widgetFunc: props => <JavascriptQuiz {...props} />
     },
     {
-      widgetName: 'autocompleteLocation',
-      widgetFunc: props => <AutocompleteLocation {...props} />
+      widgetName: 'originautocompleteLocation',
+      widgetFunc: props => <AutocompleteLocation {...props} type='origin'/>
+    },
+    {
+      widgetName: 'destautocompleteLocation',
+      widgetFunc: props => <AutocompleteLocation {...props} type='dest'/>
+    },
+    {
+      widgetName: 'hotelautocompleteLocation',
+      widgetFunc: props => <AutocompleteLocation {...props} type='hotel'/>
     },
     {
       widgetName: 'startDatePicker',
@@ -59,6 +80,15 @@ const config = {
       widgetName: 'endDatePicker',
       widgetFunc: props => <MyDatePicker {...props} type='end' />,
       mapStateToProps: ['startDate']
+    },
+    {
+      widgetName: 'checkInDatePicker',
+      widgetFunc: props => <MyDatePicker {...props} type='checkin' />
+    },
+    {
+      widgetName: 'checkOutDatePicker',
+      widgetFunc: props => <MyDatePicker {...props} type='checkout' />,
+      mapStateToProps: ['checkInDate']
     },
     {
       widgetName: 'flightSearch',
@@ -75,17 +105,36 @@ const config = {
       widgetName: 'returnFlightSearch',
       widgetFunc: props => <FlightSearch {...props} type='return' />,
       mapStateToProps: [
-        'locationLat',
-        'locationLng',
-        'location',
+        'originLocationLat',
+        'originLocationLng',
+        'originLocation',
+        'destLocationLat',
+        'destLocationLng',
+        'destLocation',
         'startDate',
         'endDate'
+      ]
+    },
+    {
+      widgetName: 'hotelSearch',
+      widgetFunc: props => <HotelSearch {...props}/>,
+      mapStateToProps: [
+        'hotelLocation',
+        'hotelLocationLat',
+        'hotelLocationLng',
+        'checkInDate',
+        'checkOutDate'
       ]
     },
     {
       widgetName: 'flightItinerary',
       widgetFunc: props => <FlightItinerary {...props} />,
       mapStateToProps: ['departingFlight', 'returningFlight']
+    },
+    {
+      widgetName: 'hotelItinerary',
+      widgetFunc: props => <HotelItinerary {...props} />,
+      mapStateToProps: ['selectedHotel']
     }
   ]
 }

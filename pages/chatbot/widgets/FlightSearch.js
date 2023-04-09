@@ -14,10 +14,10 @@ const formatDateTime = date => {
 
 const FlightSearch = props => {
   const [flightOffers, setFlightOffers] = useState([])
-  const [destinationCode, setDestinationCode] = useState('')
+  // const [destinationCode, setDestinationCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const { locationLat, locationLng, location, startDate, endDate } = props
+  const { originLocationLat, originLocationLng, originLocation, destLocationLat, destLocationLng, destLocation, startDate, endDate } = props
 
   let date = startDate
   if (props.type === 'return') {
@@ -27,15 +27,14 @@ const FlightSearch = props => {
   useEffect(() => {
     setLoading(true)
     const asyncFunc = async () => {
-      const destination = location
-      const origin = 'DTW'
+      const destination = destLocation
       const departureDate = startDate.toISOString().slice(0, 10)
       const returnDate = endDate.toISOString().slice(0, 10)
-      const getFlightOffers = async destinationCode => {
+      const getFlightOffers = async (destinationCode, originCode) => {
         setLoading(true)
         try {
           const data = await getFlightOffersAPI(
-            origin,
+            originCode,
             destinationCode,
             departureDate,
             returnDate,
@@ -47,12 +46,13 @@ const FlightSearch = props => {
         }
         setLoading(false)
       }
-      const code = await getDestinationCodeAPI(locationLat, locationLng)
-      console.log(code.data[0].iataCode)
-      await getFlightOffers(code.data[0].iataCode)
+      const destCode = await getDestinationCodeAPI(destLocationLat, destLocationLng)
+      const originCode = await getDestinationCodeAPI(originLocationLat, originLocationLng)
+      console.log(destCode.data[0].iataCode)
+      await getFlightOffers(destCode.data[0].iataCode, originCode.data[0].iataCode)
     }
     asyncFunc()
-  }, [props.location, props.startDate, props.endDate])
+  }, [props.destLocation, props.originLocation, props.startDate, props.endDate])
 
   if (loading) {
     return <div>Loading...</div>

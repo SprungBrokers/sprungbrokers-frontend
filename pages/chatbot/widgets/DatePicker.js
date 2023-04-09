@@ -14,9 +14,33 @@ const MyDatePicker = props => {
         <DatePicker
           startDate={startDate}
           minDate={startDate}
-          selected={startDate}
+          // selected={startDate}
           onChange={date => {
             props.actionProvider.handleStartDate(date)
+          }}
+        />
+      </div>
+    )
+  } else if (props.type ==='end') {
+    return (
+      <div>
+        <DatePicker
+          startDate={props.startDate}
+          minDate={props.startDate}
+          onChange={date => {
+            props.actionProvider.handleEndDate(date)
+          }}
+        />
+      </div>
+    )
+  } else if (props.type ==='checkin') {
+    return (
+      <div>
+        <DatePicker
+          startDate={props.startDate}
+          minDate={props.startDate}
+          onChange={date => {
+            props.actionProvider.handleHotelCheckInDate(date)
           }}
         />
       </div>
@@ -28,7 +52,7 @@ const MyDatePicker = props => {
           startDate={props.startDate}
           minDate={props.startDate}
           onChange={date => {
-            props.actionProvider.handleEndDate(date)
+            props.actionProvider.handleHotelCheckOutDate(date)
           }}
         />
       </div>

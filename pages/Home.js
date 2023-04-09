@@ -11,10 +11,10 @@ export default function Home () {
       </Head>
 
       <main>
-        <h1 className={styles.title}>SprungBroker</h1>
+        <h1 className={styles.title}>SprungBroker Chatbot Demo</h1>
 
         <p className={styles.description}>
-          It's never been easier to book a trip.
+          {/* It's never been easier to book a trip. */}
         </p>
         <div className='App'>
           <ChatBox />
