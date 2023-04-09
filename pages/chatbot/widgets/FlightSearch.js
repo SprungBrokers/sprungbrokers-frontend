@@ -1,64 +1,6 @@
 // make a call to the Amadeus API to get the flight offers
 import React, { useState, useEffect } from 'react'
-
-const API_KEY = 'ffmdpEq1rGKspqNkgq3jXhYXpbqp'
-
-const getDestinationCodeAPI = async (latitude, longitude) => {
-  console.log('running get destination code')
-  console.log(process.env.AMADEUS_API_KEY)
-  try {
-    const response = await fetch(
-      `https://test.api.amadeus.com/v1/reference-data/locations/airports?latitude=${latitude}&longitude=${longitude}`,
-      {
-        headers: {
-          Authorization: `Bearer ${API_KEY}`
-        }
-      }
-    )
-    const data = await response.json()
-    console.log('DATA:', data)
-    return data
-  } catch (error) {
-    console.log('ERROR:', error)
-  }
-}
-
-const getFlightOffersAPI = async (
-  origin,
-  destination,
-  departureDate,
-  returnDate,
-  type
-) => {
-  console.log(type)
-  try {
-    let response
-    if (type === 'depart') {
-      response = await fetch(
-        `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${origin}&destinationLocationCode=${destination}&departureDate=${departureDate}&adults=1&nonStop=true`,
-        {
-          headers: {
-            Authorization: `Bearer ${API_KEY}`
-          }
-        }
-      )
-    } else {
-      response = await fetch(
-        `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${destination}&destinationLocationCode=${origin}&departureDate=${returnDate}&adults=1&nonStop=true`,
-        {
-          headers: {
-            Authorization: `Bearer ${API_KEY}`
-          }
-        }
-      )
-    }
-    const data = await response.json()
-    console.log('DATA:', data)
-    return data
-  } catch (error) {
-    console.log('ERROR:', error)
-  }
-}
+import { getDestinationCodeAPI, getFlightOffersAPI } from './ApiCalls.js'
 
 const formatDateTime = date => {
   // takes a string in the format of YYYY-MM-DDTHH:MM:SS and returns a string in the format of HH:MM AM/PM
