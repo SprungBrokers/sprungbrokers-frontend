@@ -1,5 +1,3 @@
-// TODO: Complete this itinerary
-
 const HotelItinerary = props => {
   const hotel = props.selectedHotel
   const offer = hotel.offers[0]
