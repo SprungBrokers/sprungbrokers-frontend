@@ -235,3 +235,69 @@ export const getHotelsOffers = async (offerID, lang="ENG") => {
       console.log('ERROR:', error)
     }
   }
+
+
+  // https://developers.amadeus.com/self-service/category/destination-content/api-doc/points-of-interest/api-reference
+  export const getPointsOfInterest = async (lat, long, rad=5) => {
+    console.log('running get points of interest (ex: restaurants, sights, shopping, nightlife, etc.)')
+    console.log(process.env.AMADEUS_API_KEY)
+    try {
+      const response = await fetch(
+        `  https://test.api.amadeus.com/v1/reference-data/locations/pois?latitude=${lat}&longitude=${long}&radius=${rad}`,
+        {
+          headers: {
+            Authorization: `Bearer ${API_KEY}`
+          }
+        }
+      )
+      const data = await response.json()
+      console.log('DATA:', data)
+      return data
+    } catch (error) {
+      console.log('ERROR:', error)
+    }
+  }
+
+
+  // https://developers.amadeus.com/self-service/category/destination-content/api-doc/tours-and-activities/api-reference
+  export const getToursActivities = async (lat, long, rad=5) => {
+    console.log('running get tours and activities ex:(museums, tours, etc)')
+    console.log(process.env.AMADEUS_API_KEY)
+    try {
+      const response = await fetch(
+        `  https://test.api.amadeus.com/v1/shopping/activities?latitude=${lat}&longitude=${long}&radius=${rad}`,
+        {
+          headers: {
+            Authorization: `Bearer ${API_KEY}`
+          }
+        }
+      )
+      const data = await response.json()
+      console.log('DATA:', data)
+      return data
+    } catch (error) {
+      console.log('ERROR:', error)
+    }
+  }
+
+  
+  // https://developers.amadeus.com/self-service/category/trip/api-doc/travel-recommendations/api-reference
+  export const getTravellerRecommendation = async (destCity, originCountry='US') => {
+    console.log('running get tours and activities ex:(museums, tours, etc)')
+    console.log(process.env.AMADEUS_API_KEY)
+    try {
+      const response = await fetch(
+        `https://test.api.amadeus.com/v1/reference-data/recommended-locations?cityCodes=${destCity}&travelerCountryCode=${originCountry}`,
+        {
+          headers: {
+            Authorization: `Bearer ${API_KEY}`
+          }
+        }
+      )
+      const data = await response.json()
+      console.log('DATA:', data)
+      return data
+    } catch (error) {
+      console.log('ERROR:', error)
+    }
+  }
