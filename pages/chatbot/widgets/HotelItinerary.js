@@ -1,8 +1,22 @@
+import React, { useEffect } from 'react'
+
 const HotelItinerary = props => {
   const hotel = props.selectedHotel
   const offer = hotel.offers[0]
   const num_adults = offer.guests.adults ?? 0
   const num_children = offer.guests.children ?? 0 //idek if children is a parameter
+
+  const flightCost = props.flightCost
+  const budget = props.budget
+
+  // Run the props.actionProvider.showBudgetMessage(flightCost, offer.price.total, budget) function after the component mounts
+  useEffect(() => {
+    props.actionProvider.showBudgetMessage(
+      flightCost,
+      offer.price.total,
+      budget
+    )
+  }, [])
 
   return (
     <div>
@@ -75,7 +89,7 @@ const HotelItinerary = props => {
           <h3>Total Price</h3>
         </div>
         <div className='hotel__price--body'>
-          <p>${Math.round(parseFloat(offer.price.total) * 1.05 * 100) / 100}</p>
+          <p>${Math.round(parseFloat(offer.price.total) * 100) / 100}</p>
         </div>
       </div>
 

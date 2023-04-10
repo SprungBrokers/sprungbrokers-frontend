@@ -2,91 +2,51 @@
 import React, { useState, useEffect } from 'react'
 
 // API return jsons from Amadeus Documentation
-import hotelList from './HotelList'
-import hotelOffers from './HotelOffers'
-
-const API_KEY = 'ffmdpEq1rGKspqNkgq3jXhYXpbqp'
-
-const getHotelsListAPI = async (latitude, longitude) => {
-  console.log('running get destination code')
-  console.log(process.env.AMADEUS_API_KEY)
-  try {
-    // const response = await fetch(
-    //   `https://test.api.amadeus.com/v1/reference-data/hotels/by-geocode?latitude=${latitude}&longitude=${longitude}`,
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${API_KEY}`
-    //     }
-    //   }
-    // )
-    //const data = await response.json()
-    const data = hotelList
-    console.log('DATA:', data)
-    return data
-  } catch (error) {
-    console.log('ERROR:', error)
-  }
-}
-
-const getHotelOffersAPI = async (
-  hotelids,
-  checkindate,
-  checkoutdate,
-  type
-) => {
-  console.log(type)
-  try {
-    // let response
-    // response = await fetch(
-    // `https://test.api.amadeus.com/v2/shopping/hotel-offers?hotelIds=${hotelids}&checkInDate=${checkindate}&checkOutDate=${checkoutdate}`,
-    // {
-    //     headers: {
-    //     Authorization: `Bearer ${API_KEY}`
-    //     }
-    // }
-    // )
-    //const data = await response.json()
-    const data = hotelOffers
-    console.log('DATA:', data)
-    return data
-  } catch (error) {
-    console.log('ERROR:', error)
-  }
-}
+import { getHotelsByCity, getMultiHotelsOffers } from './ApiCalls'
 
 const HotelSearch = props => {
   const [hotelOffers, setHotelOffers] = useState([])
   const [cityCode, setCityCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const { hotelLocation, hotelLocationLat, hotelLocationLng, checkInDate, checkOutDate } = props
+  const {
+    hotelLocation,
+    hotelLocationLat,
+    hotelLocationLng,
+    startDate,
+    endDate,
+    location,
+    budget,
+    flightCost
+  } = props
 
   useEffect(() => {
     setLoading(true)
     const asyncFunc = async () => {
-      const checkindate = checkInDate.toISOString().slice(0, 10)
-      const checkoutdate = checkOutDate.toISOString().slice(0, 10)
-      const getHotelOffers = async hotelids => {
+      const getHotelOffers = async hotel_ids => {
         setLoading(true)
         try {
-          const data = await getHotelOffersAPI(
-            hotelids,
-            checkindate,
-            checkoutdate,
-            props.type
-          )
+          const data = await getMultiHotelsOffers(hotel_ids, startDate, endDate)
           setHotelOffers(data.data)
         } catch (error) {
           setError(error.message)
         }
         setLoading(false)
       }
-      const hotels = await getHotelsListAPI(hotelLocationLat, hotelLocationLng)
-      console.log(hotels)
-      await getHotelOffers(hotels)
+      console.log('SEARCHING FOR HOTELS NEAR', location)
+      let hotels = await getHotelsByCity(location)
+      console.log('HOTELS: ', hotels)
+      let hotel_ids = hotels.data.map(hotel => hotel.hotelId)
+      console.log(hotel_ids)
+      // if the size of the hotel_ids array is greater than 100, then we need to make multiple calls to the API
+      // to get the hotel offers
+      if (hotel_ids.length > 100) {
+        hotel_ids = hotel_ids.slice(0, 100)
+      }
+      await getHotelOffers(hotel_ids)
     }
     asyncFunc()
-  }, [props.checkInDate, props.checkOutDate])
+  }, [props.startDate, props.endDate])
 
   if (loading) {
     return <div>Loading...</div>
@@ -101,22 +61,43 @@ const HotelSearch = props => {
     props.actionProvider.selectHotel(hotelOffer)
   }
 
+  // calculate the number of nights between the two dates (dates are in YYYY-MM-DD format)
+  const getNights = (startDate, endDate) => {
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+    const diffTime = Math.abs(end - start)
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return diffDays
+  }
+
+  console.log ("FLIGHT COST: ", flightCost)
+  console.log ("BUDGET: ", budget)
+  
+
+  const nightStay = getNights(startDate, endDate)
+
   return (
     <div>
-      <strong>Hotels from {checkInDate.toJSON().slice(0, 10)} to {checkOutDate.toJSON().slice(0, 10)}:</strong>
+      <strong>
+        Hotels from {startDate} to {endDate}:
+      </strong>
       <br />
       <i>All times are in the city's local timezone</i>
       {hotelOffers.map(hotelOffer => (
         <div
           onClick={() => selectHotel(hotelOffer)}
-          className='flightBox'
+          // className='flightBox'
+          // add conditional styling to the flightBox
+          className={
+            hotelOffer.offers[0].price.total < budget - flightCost
+              ? 'flightBox green'
+              : 'flightBox red'
+          }
           key={hotelOffer.id}
         >
           {/* <strong>Departure Flight:</strong> */}
           <div className='flightPath'>
-            <strong className='airportName'>
-              {hotelOffer.hotel.name}
-            </strong>
+            <strong className='airportName'>{hotelOffer.hotel.name}</strong>
             {/* from{' '}
             {formatDateTime(
               hotelOffer.itineraries[0].segments[0].departure.at
@@ -125,11 +106,12 @@ const HotelSearch = props => {
             {formatDateTime(hotelOffer.itineraries[0].segments[0].arrival.at)} */}
           </div>
           <div className='flightPath'>
+            <div>{hotelOffer.offers[0].rateCode} Star Hotel</div>
             <div>
-              {hotelOffer.offers[0].rateCode} Star Hotel
-            </div>
-            <div>
-            ${Math.round(hotelOffer.offers[0].price.total * 1.05 * 100) / 100} at ${Math.round(hotelOffer.offers[0].price.base * 1.05 * 100) / 100} per night
+              ${Math.round(hotelOffer.offers[0].price.total * 100) / 100} at $
+              {Math.round((hotelOffer.offers[0].price.base * 100) / nightStay) /
+                100}{' '}
+              per night
             </div>
           </div>
           <br />
@@ -152,7 +134,8 @@ const HotelSearch = props => {
           <br /> */}
           <div>
             <strong>
-              Room Type: {hotelOffer.offers[0].room.typeEstimated.beds}&nbsp;{hotelOffer.offers[0].room.typeEstimated.bedType}&nbsp;
+              Room Type: {hotelOffer.offers[0].room.typeEstimated.beds}&nbsp;
+              {hotelOffer.offers[0].room.typeEstimated.bedType}&nbsp;
             </strong>{' '}
           </div>
         </div>
@@ -179,6 +162,12 @@ const HotelSearch = props => {
         .airportName {
           font-weight: bold;
           font-size: 1.2em;
+        }
+        .green {
+          background-color: #b3ffb3;
+        }
+        .red {
+          background-color: #ffb3b3;
         }
       `}</style>
     </div>

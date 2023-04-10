@@ -289,7 +289,6 @@ const FlightItinerary = props => {
             {Math.round(
               (parseFloat(props.departingFlight.price.total) +
                 parseFloat(props.returningFlight.price.total)) *
-                1.05 *
                 100
             ) / 100}
           </p>

@@ -17,7 +17,17 @@ const FlightSearch = props => {
   // const [destinationCode, setDestinationCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const { originLocationLat, originLocationLng, originLocation, destLocationLat, destLocationLng, destLocation, startDate, endDate } = props
+
+  const [show, setShow] = useState(true)
+
+  const {
+    originLocationLat,
+    originLocationLng,
+    originLocation,
+    location,
+    startDate,
+    endDate
+  } = props
 
   let date = startDate
   if (props.type === 'return') {
@@ -27,9 +37,10 @@ const FlightSearch = props => {
   useEffect(() => {
     setLoading(true)
     const asyncFunc = async () => {
-      const destination = destLocation
-      const departureDate = startDate.toISOString().slice(0, 10)
-      const returnDate = endDate.toISOString().slice(0, 10)
+      // const departureDate = startDate.toISOString().slice(0, 10)
+      // const returnDate = endDate.toISOString().slice(0, 10)
+      const departureDate = startDate
+      const returnDate = endDate
       const getFlightOffers = async (destinationCode, originCode) => {
         setLoading(true)
         try {
@@ -46,10 +57,12 @@ const FlightSearch = props => {
         }
         setLoading(false)
       }
-      const destCode = await getDestinationCodeAPI(destLocationLat, destLocationLng)
-      const originCode = await getDestinationCodeAPI(originLocationLat, originLocationLng)
-      console.log(destCode.data[0].iataCode)
-      await getFlightOffers(destCode.data[0].iataCode, originCode.data[0].iataCode)
+      const originCode = await getDestinationCodeAPI(
+        originLocationLat,
+        originLocationLng
+      )
+      console.log(location)
+      await getFlightOffers(location, 'ORD')
     }
     asyncFunc()
   }, [props.destLocation, props.originLocation, props.startDate, props.endDate])
@@ -65,56 +78,63 @@ const FlightSearch = props => {
   const selectFlight = flightOffer => {
     console.log('Departing flight:', flightOffer)
     if (props.type === 'depart') {
+      setShow(false)
       props.actionProvider.selectDepartingFlight(flightOffer)
     } else {
+      setShow(false)
       props.actionProvider.selectReturningFlight(flightOffer)
     }
   }
 
-  return (
-    <div>
-      <strong>Flights on {date.toJSON().slice(0, 10)}:</strong>
-      <br />
-      <i>All times are in the airport's local timezone</i>
-      {flightOffers.map(flightOffer => (
-        <div
-          onClick={() => selectFlight(flightOffer)}
-          className='flightBox'
-          key={flightOffer.id}
-        >
-          {/* <strong>Departure Flight:</strong> */}
-          <div className='flightPath'>
-            <strong className='airportName'>
-              {flightOffer.itineraries[0].segments[0].departure.iataCode}
-            </strong>{' '}
-            <div>{'->'}</div>
-            <strong>{flightOffer.itineraries[0].duration.slice(2, 7)}</strong>
-            <div>{'->'}</div>
-            <strong className='airportName'>
-              {flightOffer.itineraries[0].segments[0].arrival.iataCode}
-            </strong>{' '}
-            {/* from{' '}
+  if (!show) {
+    return null
+  } else if (flightOffers?.length === 0) {
+    return <div>Sorry, there are no nonstop flights available on {date} </div>
+  } else {
+    return (
+      <div>
+        <strong>Flights on {date}:</strong>
+        <br />
+        <i>All times are in the airport's local timezone</i>
+        {flightOffers.map(flightOffer => (
+          <div
+            onClick={() => selectFlight(flightOffer)}
+            className='flightBox'
+            key={flightOffer.id}
+          >
+            {/* <strong>Departure Flight:</strong> */}
+            <div className='flightPath'>
+              <strong className='airportName'>
+                {flightOffer.itineraries[0].segments[0].departure.iataCode}
+              </strong>{' '}
+              <div>{'->'}</div>
+              <strong>{flightOffer.itineraries[0].duration.slice(2, 7)}</strong>
+              <div>{'->'}</div>
+              <strong className='airportName'>
+                {flightOffer.itineraries[0].segments[0].arrival.iataCode}
+              </strong>{' '}
+              {/* from{' '}
             {formatDateTime(
               flightOffer.itineraries[0].segments[0].departure.at
             )}{' '}
             to{' '}
             {formatDateTime(flightOffer.itineraries[0].segments[0].arrival.at)} */}
-          </div>
-          <div className='flightPath'>
-            <div>
-              {formatDateTime(
-                flightOffer.itineraries[0].segments[0].departure.at
-              )}{' '}
             </div>
-            <div>
-              {formatDateTime(
-                flightOffer.itineraries[0].segments[0].arrival.at
-              )}
+            <div className='flightPath'>
+              <div>
+                {formatDateTime(
+                  flightOffer.itineraries[0].segments[0].departure.at
+                )}{' '}
+              </div>
+              <div>
+                {formatDateTime(
+                  flightOffer.itineraries[0].segments[0].arrival.at
+                )}
+              </div>
             </div>
-          </div>
-          <br />
-          {/* <strong>Return Flight:</strong> */}
-          {/* <div className='flightPath'>
+            <br />
+            {/* <strong>Return Flight:</strong> */}
+            {/* <div className='flightPath'>
             <strong className='airportName'>
               {flightOffer.itineraries[1].segments[0].departure.iataCode}
             </strong>{' '}
@@ -130,40 +150,41 @@ const FlightSearch = props => {
             {formatDateTime(flightOffer.itineraries[1].segments[0].arrival.at)}
           </div>
           <br /> */}
-          <div>
-            <strong>
-              ${Math.round(flightOffer.price.total * 1.05 * 100) / 100}
-            </strong>{' '}
-            ({flightOffer.numberOfBookableSeats} seats left)
+            <div>
+              <strong>
+                ${Math.round(flightOffer.price.total * 100) / 100}
+              </strong>{' '}
+              ({flightOffer.numberOfBookableSeats} seats left)
+            </div>
           </div>
-        </div>
-      ))}
-      <style jsx>{`
-        .flightBox {
-          border: 1px solid black;
-          margin: 10px;
-          padding: 10px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          width: 100%;
-        }
-        .flightBox:hover {
-          background-color: #e6e6e6;
-          cursor: pointer;
-        }
-        .flightPath {
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-        }
-        .airportName {
-          font-weight: bold;
-          font-size: 1.2em;
-        }
-      `}</style>
-    </div>
-  )
+        ))}
+        <style jsx>{`
+          .flightBox {
+            border: 1px solid black;
+            margin: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+          }
+          .flightBox:hover {
+            background-color: #e6e6e6;
+            cursor: pointer;
+          }
+          .flightPath {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+          }
+          .airportName {
+            font-weight: bold;
+            font-size: 1.2em;
+          }
+        `}</style>
+      </div>
+    )
+  }
 }
 
 export default FlightSearch
