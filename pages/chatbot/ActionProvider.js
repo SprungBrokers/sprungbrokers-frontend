@@ -3,13 +3,6 @@ class ActionProvider {
     this.createChatBotMessage = createChatBotMessage
     this.createClientMessage = createClientMessage
     this.setState = setStateFunc
-    // this.state = {
-    //   name: '',
-    //   location: '',
-    //   startDate: '',
-    //   endDate: '',
-    //   currMessage: 0
-    // }
   }
 
   greet = name => {
@@ -311,6 +304,24 @@ class ActionProvider {
       ...prevState,
       messages: [...prevState.messages, message]
     }))
+  }
+
+  // Takes a response object from our NLP and maps values to state
+  responseToState = (response) => {
+    const details = response.details
+    //TODO: Map all values in details to state
+    if (details.start_date) {
+      this.setState(prev => ({
+        ...prev,
+        startDate: details.start_date
+      }))
+    }    
+    if (details.end_date) {
+      this.setState(prev => ({
+        ...prev,
+        endDate: details.end_date
+      }))
+    }
   }
 }
 
