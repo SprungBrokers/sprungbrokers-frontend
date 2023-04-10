@@ -1,31 +1,11 @@
 import React, { useState, useEffect } from 'react'
 
 class MessageParser {
-  constructor (actionProvider) {
+  constructor (actionProvider, state) {
     this.actionProvider = actionProvider
-    this.state = {
-      name: '',
-      currMessage: 0
-    }
+    this.state = state
   }
-
-  responseToState = (response) => {
-    const details = response.details
-    //TODO: Map all values in details to state
-    if (details.start_date) {
-      this.setState(prev => ({
-        ...prev,
-        startDate: details.start_date
-      }))
-    }    
-    if (details.end_date) {
-      this.setState(prev => ({
-        ...prev,
-        endDate: details.end_date
-      }))
-    }
-  }
-
+  
   getFlightInfo = () => {
     if (!this.state.startDate) {
       this.actionProvider.handleStartDatePicker()
@@ -62,7 +42,6 @@ class MessageParser {
 
   // Call backend and update state
   parse = async (message) => {
-    const lowercase = message.toLowerCase()
     console.log(message)
 
     const response = await this.fetch_backend(message)
@@ -72,7 +51,7 @@ class MessageParser {
       return
     }
 
-    this.responseToState(response)
+    this.actionProvider.responseToState(response)
 
     // TODO(backend): Need to know if hotel or flight
     // Code below assumes flight
