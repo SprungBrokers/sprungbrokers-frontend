@@ -1,4 +1,4 @@
-const API_KEY = 'GnWfHLXQcDJYxZ9WxwVSoGOrSM3L'
+const API_KEY = 'XRDC6btnzxj65clSfpO3doW8iOXB'
 
 export const getDestinationCodeAPI = async (latitude, longitude) => {
   console.log('running get destination code')

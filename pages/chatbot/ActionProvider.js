@@ -29,6 +29,15 @@ class ActionProvider {
     // const userMessage = this.createClientMessage(message)
     // this.addMessageToState(userMessage)
 
+    console.log(message)
+
+    console.log(state.messageHistory)
+
+    // remove all items in messageHistory that have null content parameter
+    let messageHistory = state.messageHistory.filter(function (el) {
+      return el.content != null
+    })
+
     console.log(state.startDate)
     console.log(state.endDate)
     console.log(state.location)
@@ -42,7 +51,7 @@ class ActionProvider {
         budget: state.budget,
         location: state.location
       },
-      state.messageHistory,
+      messageHistory,
       state.messageH
     )
 
@@ -57,6 +66,28 @@ class ActionProvider {
           withAvatar: false
         })
         this.addMessageToState(botMessage)
+
+        if (state.messageH.length > 0) {
+          console.log(state.messageH)
+          let botMessage = ''
+          for (let i = 0; i < state.messageH.length; i++) {
+            message = state.messageH[i].message
+            if (state.messageH[i].role == 'assistant') {
+              // parse string to JSON
+              let messageJSON = JSON.parse(state.messageH[i].content)
+              console.log(messageJSON)
+              botMessage = this.createChatBotMessage(
+                messageJSON['follow_up_question'],
+                {
+                  withAvatar: false
+                }
+              )
+            }
+          }
+          if (botMessage.message != null) {
+            this.addMessageToState(botMessage)
+          }
+        }
       } else {
         let oldStartDate = state.startDate
         let oldEndDate = state.endDate
@@ -69,7 +100,8 @@ class ActionProvider {
           endDate: response.details.end_date,
           location: response.details.location,
           budget: response.details.budget,
-          messageH: response.message_h
+          messageH: response.message_h,
+          messageHistory: response.message_history
         }))
         console.log(response.details)
         if (response.message != null) {
@@ -388,7 +420,9 @@ class ActionProvider {
     hotelCost = parseFloat(hotelCost)
     budget = parseFloat(budget)
     let message =
-      "Your trip's current cost is $" + (flightCost + hotelCost) + '.'
+      "Your trip's current cost is $" +
+      (flightCost + hotelCost).toFixed(2) +
+      '.'
     if (parseFloat(budget) - flightCost - hotelCost < 0) {
       message += ` You have exceeded your budget by $${(
         flightCost +
